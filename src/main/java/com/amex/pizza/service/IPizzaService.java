@@ -11,8 +11,10 @@ import com.amex.pizza.exception.ResourceNotFoundException;
 import com.amex.pizza.rest.domain.PizzaDto;
 
 /**
+ * Provides method implementations for Service Class
+ * 
  * @author Mano Ranjan Jayamaran
- *
+ * @version 1.0
  */
 public interface IPizzaService {
 

@@ -18,8 +18,12 @@ import com.amex.pizza.repository.domain.Pizza;
 import com.amex.pizza.rest.domain.PizzaDto;
 
 /**
+ * Service Class that interacts with DAO layer to create or get entities.
+ * 
+ * Also it converts Entity object to DTO and vice versa using ModelMapper
+ * 
  * @author Mano Ranjan Jayamaran
- *
+ * @version 1.0
  */
 @Service
 public class PizzaService implements IPizzaService {
@@ -37,31 +41,40 @@ public class PizzaService implements IPizzaService {
 	}
 
 	@Override
-	public PizzaDto addPizza(PizzaDto pizzaDto) throws ParseException {
+	public PizzaDto addPizza(final PizzaDto pizzaDto) throws ParseException {
 		Pizza pizza = convertToEntity(pizzaDto);
 		return convertToDto(pizzaRepository.save(pizza));
 	}
 
 	@Override
-	public PizzaDto updatePizza(PizzaDto pizzaDto) throws ParseException {
+	public PizzaDto updatePizza(final PizzaDto pizzaDto) throws ParseException {
 		Pizza pizza = convertToEntity(pizzaDto);
 		return convertToDto(pizzaRepository.save(pizza));
 	}
 
 	@Override
-	public PizzaDto getPizzaById(UUID id) throws ResourceNotFoundException {
-		PizzaDto pizzaDto = convertToDto(pizzaRepository.findById(id)
+	public PizzaDto getPizzaById(final UUID id) throws ResourceNotFoundException {
+		return convertToDto(pizzaRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Pizza not found for this id :: " + id)));
-		return pizzaDto;
 	}
 
-	private PizzaDto convertToDto(Pizza pizza) {
-		PizzaDto pizzaDto = modelMapper.map(pizza, PizzaDto.class);
-		return pizzaDto;
+	/**
+	 * Method to convert Pizza Entity object to Pizza DTO object
+	 * 
+	 * @param Pizza
+	 * @return PizzaDto
+	 */
+	private PizzaDto convertToDto(final Pizza pizza) {
+		return modelMapper.map(pizza, PizzaDto.class);
 	}
 
-	private Pizza convertToEntity(PizzaDto pizzaDto) throws ParseException {
-		Pizza pizza = modelMapper.map(pizzaDto, Pizza.class);
-		return pizza;
+	/**
+	 * Method to convert Pizza DTO object to Pizza entity object
+	 * 
+	 * @param PizzaDto
+	 * @return Pizza
+	 */
+	private Pizza convertToEntity(final PizzaDto pizzaDto) {
+		return modelMapper.map(pizzaDto, Pizza.class);
 	}
 }

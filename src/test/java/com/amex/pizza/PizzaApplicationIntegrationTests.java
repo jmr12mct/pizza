@@ -2,7 +2,6 @@ package com.amex.pizza;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.Random;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.amex.pizza.rest.domain.PizzaDto;
+
+/**
+ * Integration testing class to test the APIs provided by controller
+ * 
+ * @author Mano Ranjan Jayamaran
+ * @version 1.0
+ */
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = PizzaApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -38,15 +44,6 @@ class PizzaApplicationIntegrationTests {
 	}
 
 	@Test
-	public void testGetAllPizzas() {
-		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-		ResponseEntity<String> response = restTemplate.exchange(getRootUrl() + "/pizzas", HttpMethod.GET, entity,
-				String.class);
-		assertNotNull(response.getBody());
-	}
-
-	@Test
 	public void testGetPizzaById() {
 		PizzaDto pizzaDto = restTemplate.getForObject(getRootUrl() + "/pizzas/2e1322aa-67e5-481d-942d-fa18c5989e45",
 				PizzaDto.class);
@@ -63,6 +60,15 @@ class PizzaApplicationIntegrationTests {
 				PizzaDto.class);
 		assertNotNull(postResponse);
 		assertNotNull(postResponse.getBody());
+	}
+
+	@Test
+	public void testGetAllPizzas() {
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+		ResponseEntity<String> response = restTemplate.exchange(getRootUrl() + "/pizzas", HttpMethod.GET, entity,
+				String.class);
+		assertNotNull(response.getBody());
 	}
 
 	@Test

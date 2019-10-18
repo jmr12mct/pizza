@@ -24,8 +24,11 @@ import com.amex.pizza.rest.domain.PizzaDto;
 import com.amex.pizza.service.PizzaService;
 
 /**
+ * Rest Controller which provide the APIs to create, update or retrieve Pizzas
+ * stored in Pizza table
+ * 
  * @author Mano Ranjan Jayamaran
- *
+ * @version 1.0
  */
 
 @RestController
@@ -48,7 +51,8 @@ public class PizzaController {
 	@PutMapping("/pizzas/{id}")
 	public ResponseEntity<PizzaDto> updatePizza(@PathVariable(value = "id") UUID id,
 			@Valid @RequestBody PizzaDto pizzaDto) throws ResourceNotFoundException, ParseException {
-		pizzaService.getPizzaById(id);
+		pizzaService.getPizzaById(id); // Invoked to check if the Resource is found, else will throw
+										// ResourceNotFoundException
 		return ResponseEntity.ok(pizzaService.updatePizza(pizzaDto));
 	}
 

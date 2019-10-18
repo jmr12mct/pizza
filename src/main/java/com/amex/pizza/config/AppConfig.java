@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Initiate ModelMapper Bean
+ * 
  * @author Mano Ranjan Jayamaran
- *
+ * @version 1.0
  */
 
 @Configuration

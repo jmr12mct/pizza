@@ -51,6 +51,9 @@ public class PizzaServiceTest {
 		mockPizza = createMockPizza();
 	}
 
+	/**
+	 * Mock and test the GetPizzas method and convert from entity to dto objects
+	 */
 	@Test
 	public void testGetPizzas() {
 		List<Pizza> result = new ArrayList<>();
@@ -64,10 +67,16 @@ public class PizzaServiceTest {
 		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.get(0).getId().toString());
 	}
 
+	/**
+	 * Mock and test the AddPizza method and convert from entity to dto objects and
+	 * vice versa
+	 */
 	@Test
 	public void testAddPizza() throws ParseException {
 		when(pizzaRepository.save(any())).thenReturn(mockPizza);
 
+		// Using Mockito to mock the return value of a method based on the input
+		// parameters that is passed during runtime
 		when(modelMapper.map(any(), any())).thenAnswer(invocation -> {
 			Object argument = invocation.getArguments()[1];
 			if (argument.equals(Pizza.class)) {
@@ -84,10 +93,16 @@ public class PizzaServiceTest {
 		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.getId().toString());
 	}
 
+	/**
+	 * Mock and test the Update Pizza method and convert from entity to dto objects
+	 * and vice versa
+	 */
 	@Test
 	public void testUpdatePizza() throws ParseException {
 		when(pizzaRepository.save(any())).thenReturn(mockPizza);
 
+		// Using Mockito to mock the return value of a method based on the input
+		// parameters that is passed during runtime
 		when(modelMapper.map(any(), any())).thenAnswer(invocation -> {
 			Object argument = invocation.getArguments()[1];
 			if (argument.equals(Pizza.class)) {
@@ -104,6 +119,9 @@ public class PizzaServiceTest {
 		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.getId().toString());
 	}
 
+	/**
+	 * Mock and test the GetPizzaById method and convert from entity to dto objects
+	 */
 	@Test
 	public void testGetPizzaById() throws ResourceNotFoundException {
 		UUID id = UUID.fromString("2e1322aa-67e5-481d-942d-fa18c5989e45");
@@ -115,6 +133,9 @@ public class PizzaServiceTest {
 		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.getId().toString());
 	}
 
+	/**
+	 * Method to create test PizzaDto object
+	 */
 	private PizzaDto createMockPizzaDto() {
 		UUID id = UUID.fromString("2e1322aa-67e5-481d-942d-fa18c5989e45");
 		PizzaDto mockPizzaDto = new PizzaDto();
@@ -125,6 +146,9 @@ public class PizzaServiceTest {
 		return mockPizzaDto;
 	}
 
+	/**
+	 * Method to create test Pizza object
+	 */
 	private Pizza createMockPizza() {
 		UUID id = UUID.fromString("cf341ff6-63db-48e9-ae57-a6473b5dfb33");
 		Pizza mockPizza = new Pizza();

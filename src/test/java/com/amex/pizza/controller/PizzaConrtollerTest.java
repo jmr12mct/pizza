@@ -28,6 +28,8 @@ import com.amex.pizza.rest.domain.PizzaDto;
 import com.amex.pizza.service.PizzaService;
 
 /**
+ * Test class to test all the methods present in Controller using Mockito
+ * 
  * @author Mano Ranjan Jayamaran
  *
  */
@@ -49,6 +51,9 @@ public class PizzaConrtollerTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
+	/**
+	 * Mock and test the GetAllPizzas method
+	 */
 	@Test
 	public void testGetAllPizzas() {
 		List<PizzaDto> result = new ArrayList<>();
@@ -59,6 +64,9 @@ public class PizzaConrtollerTest {
 		assertEquals("Tikka", responseExpected.get(0).getName());
 	}
 
+	/**
+	 * Mock and test the AddPizza method
+	 */
 	@Test
 	public void testAddPizza() throws ParseException {
 		when(pizzaService.addPizza(any(PizzaDto.class))).thenReturn(mockPizzaDto);
@@ -67,6 +75,9 @@ public class PizzaConrtollerTest {
 		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.getId().toString());
 	}
 
+	/**
+	 * Mock and test the UpdatePizza method
+	 */
 	@Test
 	public void testUpdatePizza() throws ResourceNotFoundException, ParseException {
 		UUID id = UUID.fromString("2e1322aa-67e5-481d-942d-fa18c5989e45");
@@ -77,6 +88,9 @@ public class PizzaConrtollerTest {
 		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.getBody().getId().toString());
 	}
 
+	/**
+	 * Mock and test the GetPizzaById method
+	 */
 	@Test
 	public void testGetPizzaById() throws ResourceNotFoundException {
 		UUID id = UUID.fromString("2e1322aa-67e5-481d-942d-fa18c5989e45");
@@ -87,6 +101,9 @@ public class PizzaConrtollerTest {
 		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.getBody().getId().toString());
 	}
 
+	/**
+	 * Mock and test the GetPizzaById method when Resource is not found in DB
+	 */
 	@Test
 	public void testGetPizzaByIdNotFound() throws ResourceNotFoundException {
 		UUID id = UUID.fromString("2e1322aa-67e5-481d-942d-fa18c5989e45");
@@ -96,6 +113,9 @@ public class PizzaConrtollerTest {
 		});
 	}
 
+	/**
+	 * Mock and test the UpdatePizza method when Resource is not found in DB
+	 */
 	@Test
 	public void testUpdatePizzaNotFound() throws ParseException, ResourceNotFoundException {
 		UUID id = UUID.fromString("2e1322aa-67e5-481d-942d-fa18c5989e45");
@@ -105,6 +125,9 @@ public class PizzaConrtollerTest {
 		});
 	}
 
+	/**
+	 * Method to create test PizzaDto object
+	 */
 	private PizzaDto createMockPizzaDto() {
 		UUID id = UUID.fromString("2e1322aa-67e5-481d-942d-fa18c5989e45");
 		PizzaDto mockPizzaDto = new PizzaDto();
