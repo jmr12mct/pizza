@@ -136,7 +136,7 @@ mvn clean spring-boot:run
 
 *  **Execute the JAR** :
 	Go to the local where the jar is present and execute the below command to run the application.  
-	You can get the jar file from Artifact folder in the project folder
+	**You can get the jar file from Artifact folder in the project folder**
 
 ```
 java -jar pizza-0.0.1-SNAPSHOT.jar
@@ -155,7 +155,7 @@ Provide the below information:
 * *Password* = password
 
 ### Actuator
-We can view the health and App info by accessing actuator URL and it will show the APIs that could be as part of it:
+We can view the health and App info by accessing actuator URL and it will show the APIs that could be accessed as part of it:
 
 ```
 http://localhost:9080/actuator
@@ -163,7 +163,7 @@ http://localhost:9080/actuator
 
 ## CAUTION
 
-Since we use in-memory Database, all data stored will get erased on Server startup.
+Since we use in-memory Database, all data stored will get erased on Server restart.
 
 ## Author
 
