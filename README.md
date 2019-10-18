@@ -135,7 +135,8 @@ mvn clean spring-boot:run
 ```
 
 *  **Execute the JAR** :
-	Go to the local where the jar is present and execute the below command to run the application.
+	Go to the local where the jar is present and execute the below command to run the application.  
+	You can get the jar file from Artifact folder in the project folder
 
 ```
 java -jar pizza-0.0.1-SNAPSHOT.jar
