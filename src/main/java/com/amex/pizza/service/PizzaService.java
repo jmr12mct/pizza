@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.amex.pizza.service;
 
 import java.text.ParseException;
@@ -34,24 +31,41 @@ public class PizzaService implements IPizzaService {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	/**
+	 * Method to get all Pizzas stored in Pizza table and convert to List of
+	 * PizzaDto
+	 */
 	@Override
 	public List<PizzaDto> getPizzas() {
 		List<Pizza> pizzas = pizzaRepository.findAll();
 		return pizzas.stream().map(pizza -> convertToDto(pizza)).collect(Collectors.toList());
 	}
 
+	/**
+	 * Method to add a Pizza to Pizza table
+	 * 
+	 * Method also converts dto to entity and vice versa
+	 */
 	@Override
 	public PizzaDto addPizza(final PizzaDto pizzaDto) throws ParseException {
 		Pizza pizza = convertToEntity(pizzaDto);
 		return convertToDto(pizzaRepository.save(pizza));
 	}
 
+	/**
+	 * Method to update a Pizza in Pizza table
+	 * 
+	 * Method also converts dto to entity and vice versa
+	 */
 	@Override
 	public PizzaDto updatePizza(final PizzaDto pizzaDto) throws ParseException {
 		Pizza pizza = convertToEntity(pizzaDto);
 		return convertToDto(pizzaRepository.save(pizza));
 	}
 
+	/**
+	 * Method to get a Pizza from Pizza Table using Id and convert to PizzaDto
+	 */
 	@Override
 	public PizzaDto getPizzaById(final UUID id) throws ResourceNotFoundException {
 		return convertToDto(pizzaRepository.findById(id)

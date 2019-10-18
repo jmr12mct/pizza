@@ -38,16 +38,25 @@ public class PizzaController {
 	@Autowired
 	private PizzaService pizzaService;
 
+	/**
+	 * API to return List of Pizzas stored in Pizza table
+	 */
 	@GetMapping("/pizzas")
 	public List<PizzaDto> getPizzas() {
 		return pizzaService.getPizzas();
 	}
 
+	/**
+	 * API to add a Pizza to Pizza table and return the Pizza
+	 */
 	@PostMapping("/pizzas")
 	public PizzaDto addPizza(@Valid @RequestBody PizzaDto pizzaDto) throws ParseException {
 		return pizzaService.addPizza(pizzaDto);
 	}
 
+	/**
+	 * API to update a Pizza and return the updated Pizza
+	 */
 	@PutMapping("/pizzas/{id}")
 	public ResponseEntity<PizzaDto> updatePizza(@PathVariable(value = "id") UUID id,
 			@Valid @RequestBody PizzaDto pizzaDto) throws ResourceNotFoundException, ParseException {
@@ -56,6 +65,9 @@ public class PizzaController {
 		return ResponseEntity.ok(pizzaService.updatePizza(pizzaDto));
 	}
 
+	/**
+	 * API to getting and return a Pizza by using Id
+	 */
 	@GetMapping("/pizzas/{id}")
 	public ResponseEntity<PizzaDto> getPizzaById(@PathVariable(value = "id") UUID id) throws ResourceNotFoundException {
 		return ResponseEntity.ok().body(pizzaService.getPizzaById(id));

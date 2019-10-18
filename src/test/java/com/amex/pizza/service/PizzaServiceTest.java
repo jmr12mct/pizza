@@ -1,5 +1,9 @@
 package com.amex.pizza.service;
 
+import static com.amex.pizza.util.Constants.DESCRIPTION;
+import static com.amex.pizza.util.Constants.ID;
+import static com.amex.pizza.util.Constants.NAME;
+import static com.amex.pizza.util.Constants.PRICE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +30,13 @@ import com.amex.pizza.repository.domain.Pizza;
 import com.amex.pizza.rest.domain.PizzaDto;
 
 /**
+ * Class to test all the methods present in Service using Mockito
+ * 
+ * Here the conversion between DTO and Entity objects and Vice versa are also
+ * verified
+ * 
  * @author Mano Ranjan Jayamaran
+ * @version 1.0
  *
  */
 @ExtendWith(MockitoExtension.class)
@@ -60,11 +70,13 @@ public class PizzaServiceTest {
 		result.add(mockPizza);
 		when(pizzaRepository.findAll()).thenReturn(result);
 		when(modelMapper.map(any(), any())).thenReturn(mockPizzaDto);
-		List<PizzaDto> responseExpected = pizzaService.getPizzas();
+		final List<PizzaDto> responseExpected = pizzaService.getPizzas();
 		assertNotNull(responseExpected);
 		assertEquals(1, responseExpected.size());
-		assertEquals("Tikka", responseExpected.get(0).getName());
-		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.get(0).getId().toString());
+		assertEquals(NAME, responseExpected.get(0).getName());
+		assertEquals(ID, responseExpected.get(0).getId().toString());
+		assertEquals(PRICE, responseExpected.get(0).getPrice());
+		assertEquals(DESCRIPTION, responseExpected.get(0).getDescription());
 	}
 
 	/**
@@ -87,10 +99,12 @@ public class PizzaServiceTest {
 			throw new InvalidUseOfMatchersException(String.format("Argument %s does not match", argument));
 		});
 
-		PizzaDto responseExpected = pizzaService.addPizza(mockPizzaDto);
+		final PizzaDto responseExpected = pizzaService.addPizza(mockPizzaDto);
 		assertNotNull(responseExpected);
-		assertEquals("Tikka", responseExpected.getName());
-		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.getId().toString());
+		assertEquals(NAME, responseExpected.getName());
+		assertEquals(ID, responseExpected.getId().toString());
+		assertEquals(PRICE, responseExpected.getPrice());
+		assertEquals(DESCRIPTION, responseExpected.getDescription());
 	}
 
 	/**
@@ -113,10 +127,12 @@ public class PizzaServiceTest {
 			throw new InvalidUseOfMatchersException(String.format("Argument %s does not match", argument));
 		});
 
-		PizzaDto responseExpected = pizzaService.updatePizza(mockPizzaDto);
+		final PizzaDto responseExpected = pizzaService.updatePizza(mockPizzaDto);
 		assertNotNull(responseExpected);
-		assertEquals("Tikka", responseExpected.getName());
-		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.getId().toString());
+		assertEquals(NAME, responseExpected.getName());
+		assertEquals(ID, responseExpected.getId().toString());
+		assertEquals(PRICE, responseExpected.getPrice());
+		assertEquals(DESCRIPTION, responseExpected.getDescription());
 	}
 
 	/**
@@ -127,22 +143,24 @@ public class PizzaServiceTest {
 		UUID id = UUID.fromString("2e1322aa-67e5-481d-942d-fa18c5989e45");
 		when(pizzaRepository.findById(any())).thenReturn(Optional.of(mockPizza));
 		when(modelMapper.map(any(), any())).thenReturn(mockPizzaDto);
-		PizzaDto responseExpected = pizzaService.getPizzaById(id);
+		final PizzaDto responseExpected = pizzaService.getPizzaById(id);
 		assertNotNull(responseExpected);
-		assertEquals("Tikka", responseExpected.getName());
-		assertEquals("2e1322aa-67e5-481d-942d-fa18c5989e45", responseExpected.getId().toString());
+		assertEquals(NAME, responseExpected.getName());
+		assertEquals(ID, responseExpected.getId().toString());
+		assertEquals(PRICE, responseExpected.getPrice());
+		assertEquals(DESCRIPTION, responseExpected.getDescription());
 	}
 
 	/**
 	 * Method to create test PizzaDto object
 	 */
 	private PizzaDto createMockPizzaDto() {
-		UUID id = UUID.fromString("2e1322aa-67e5-481d-942d-fa18c5989e45");
+		UUID id = UUID.fromString(ID);
 		PizzaDto mockPizzaDto = new PizzaDto();
 		mockPizzaDto.setId(id);
-		mockPizzaDto.setName("Tikka");
-		mockPizzaDto.setPrice(25);
-		mockPizzaDto.setDescription("Spicy Pizza");
+		mockPizzaDto.setName(NAME);
+		mockPizzaDto.setPrice(PRICE);
+		mockPizzaDto.setDescription(DESCRIPTION);
 		return mockPizzaDto;
 	}
 

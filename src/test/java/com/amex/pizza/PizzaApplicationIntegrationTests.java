@@ -1,8 +1,13 @@
 package com.amex.pizza;
 
+import static com.amex.pizza.util.Constants.DESCRIPTION;
+import static com.amex.pizza.util.Constants.NAME;
+import static com.amex.pizza.util.Constants.NEW_NAME;
+import static com.amex.pizza.util.Constants.PRICE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -57,11 +62,11 @@ class PizzaApplicationIntegrationTests {
 	 */
 	@Test
 	public void testGetAllPizzas() throws IOException, JSONException {
-		ResponseEntity<String> response = restTemplate.getForEntity("/api/v1/pizzas", String.class);
+		ResponseEntity<String> response = restTemplate.getForEntity(getRootUrl() + "/api/v1/pizzas", String.class);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode responseJson = objectMapper.readTree(response.getBody());
-		assertEquals(response.getStatusCode(), HttpStatus.OK);
+		assertEquals(OK, response.getStatusCode());
 		assertFalse(responseJson.isMissingNode());
 		assertTrue(responseJson.toString()
 				.contains("\"name\":\"Tikka\",\"price\":25.0,\"description\":\"Spicy Pizza\"}]"));
@@ -75,18 +80,15 @@ class PizzaApplicationIntegrationTests {
 	 */
 	@Test
 	public void testAddPizza() {
-		PizzaDto pizzaDto = new PizzaDto();
-		pizzaDto.setName("Tikka");
-		pizzaDto.setPrice(25);
-		pizzaDto.setDescription("Spicy Pizza");
+		PizzaDto pizzaDto = createMockPizzaDto();
 		ResponseEntity<PizzaDto> postResponse = restTemplate.postForEntity(getRootUrl() + "/api/v1/pizzas", pizzaDto,
 				PizzaDto.class);
-
-		assertEquals(HttpStatus.OK, postResponse.getStatusCode());
-		assertEquals(UUID.class, postResponse.getBody().getId().getClass());
-		assertEquals("Tikka", postResponse.getBody().getName());
-		assertEquals(25, postResponse.getBody().getPrice());
-		assertEquals("Spicy Pizza", postResponse.getBody().getDescription());
+		final PizzaDto addedPizzaDto = postResponse.getBody();
+		assertEquals(OK, postResponse.getStatusCode());
+		assertEquals(UUID.class, addedPizzaDto.getId().getClass());
+		assertEquals(NAME, addedPizzaDto.getName());
+		assertEquals(PRICE, addedPizzaDto.getPrice());
+		assertEquals(DESCRIPTION, addedPizzaDto.getDescription());
 	}
 
 	/**
@@ -100,27 +102,24 @@ class PizzaApplicationIntegrationTests {
 	 */
 	@Test
 	public void testGetPizzaById() {
-		PizzaDto pizzaDto = new PizzaDto();
-		pizzaDto.setName("Tikka");
-		pizzaDto.setPrice(25);
-		pizzaDto.setDescription("Spicy Pizza");
+		PizzaDto pizzaDto = createMockPizzaDto();
 		ResponseEntity<PizzaDto> postResponse = restTemplate.postForEntity(getRootUrl() + "/api/v1/pizzas", pizzaDto,
 				PizzaDto.class);
+		final PizzaDto addedPizzaDto = postResponse.getBody();
+		assertEquals(OK, postResponse.getStatusCode());
+		assertEquals(UUID.class, addedPizzaDto.getId().getClass());
+		assertEquals(NAME, addedPizzaDto.getName());
+		assertEquals(PRICE, addedPizzaDto.getPrice());
+		assertEquals(DESCRIPTION, addedPizzaDto.getDescription());
 
-		assertEquals(HttpStatus.OK, postResponse.getStatusCode());
-		assertEquals(UUID.class, postResponse.getBody().getId().getClass());
-		assertEquals("Tikka", postResponse.getBody().getName());
-		assertEquals(25, postResponse.getBody().getPrice());
-		assertEquals("Spicy Pizza", postResponse.getBody().getDescription());
-
-		postResponse = restTemplate.getForEntity(getRootUrl() + "/api/v1/pizzas/" + postResponse.getBody().getId(),
-				PizzaDto.class);
-
-		assertEquals(HttpStatus.OK, postResponse.getStatusCode());
-		assertEquals(UUID.class, postResponse.getBody().getId().getClass());
-		assertEquals("Tikka", postResponse.getBody().getName());
-		assertEquals(25, postResponse.getBody().getPrice());
-		assertEquals("Spicy Pizza", postResponse.getBody().getDescription());
+		ResponseEntity<PizzaDto> getResponse = restTemplate
+				.getForEntity(getRootUrl() + "/api/v1/pizzas/" + addedPizzaDto.getId(), PizzaDto.class);
+		final PizzaDto pizzaDtoForId = getResponse.getBody();
+		assertEquals(OK, getResponse.getStatusCode());
+		assertEquals(UUID.class, pizzaDtoForId.getId().getClass());
+		assertEquals(NAME, pizzaDtoForId.getName());
+		assertEquals(PRICE, pizzaDtoForId.getPrice());
+		assertEquals(DESCRIPTION, pizzaDtoForId.getDescription());
 	}
 
 	/**
@@ -130,35 +129,43 @@ class PizzaApplicationIntegrationTests {
 	 * 
 	 * Assert the output name to check if the updated name value matches
 	 * 
-	 * Assert price and Description too check if the retrieved values matches with
+	 * Assert price and Description to check if the retrieved values matches with
 	 * the posted pizzaDto
 	 */
 	@Test
 	public void testUpdatePizza() {
-		PizzaDto pizzaDto = new PizzaDto();
-		pizzaDto.setName("Tikka");
-		pizzaDto.setPrice(25);
-		pizzaDto.setDescription("Spicy Pizza");
+		PizzaDto pizzaDto = createMockPizzaDto();
 		ResponseEntity<PizzaDto> postResponse = restTemplate.postForEntity(getRootUrl() + "/api/v1/pizzas", pizzaDto,
 				PizzaDto.class);
+		final PizzaDto addedPizzaDto = postResponse.getBody();
+		assertEquals(OK, postResponse.getStatusCode());
+		assertEquals(UUID.class, addedPizzaDto.getId().getClass());
+		assertEquals(NAME, addedPizzaDto.getName());
+		assertEquals(PRICE, addedPizzaDto.getPrice());
+		assertEquals(DESCRIPTION, addedPizzaDto.getDescription());
 
-		assertEquals(HttpStatus.OK, postResponse.getStatusCode());
-		assertEquals(UUID.class, postResponse.getBody().getId().getClass());
-		assertEquals("Tikka", postResponse.getBody().getName());
-		assertEquals(25, postResponse.getBody().getPrice());
-		assertEquals("Spicy Pizza", postResponse.getBody().getDescription());
-
-		pizzaDto.setName("TastyTikka");
+		// Updating the name value
+		pizzaDto.setName(NEW_NAME);
 		HttpEntity<PizzaDto> requestEntity = new HttpEntity<>(pizzaDto);
-		ResponseEntity<PizzaDto> putResponse = restTemplate.exchange("/api/v1/pizzas/" + postResponse.getBody().getId(),
+		ResponseEntity<PizzaDto> putResponse = restTemplate.exchange(getRootUrl() + "/api/v1/pizzas/" + addedPizzaDto.getId(),
 				HttpMethod.PUT, requestEntity, PizzaDto.class);
-
+		final PizzaDto updatedPizzaDto = putResponse.getBody();
 		assertEquals(HttpStatus.OK, putResponse.getStatusCode());
+		assertEquals(UUID.class, updatedPizzaDto.getId().getClass());
+		assertEquals(NEW_NAME, updatedPizzaDto.getName());
+		assertEquals(PRICE, updatedPizzaDto.getPrice());
+		assertEquals(DESCRIPTION, updatedPizzaDto.getDescription());
+	}
 
-		assertEquals(UUID.class, putResponse.getBody().getId().getClass());
-		assertEquals("TastyTikka", putResponse.getBody().getName());
-		assertEquals(25, putResponse.getBody().getPrice());
-		assertEquals("Spicy Pizza", putResponse.getBody().getDescription());
+	/**
+	 * Method to create test PizzaDto object
+	 */
+	private PizzaDto createMockPizzaDto() {
+		PizzaDto mockPizzaDto = new PizzaDto();
+		mockPizzaDto.setName(NAME);
+		mockPizzaDto.setPrice(PRICE);
+		mockPizzaDto.setDescription(DESCRIPTION);
+		return mockPizzaDto;
 	}
 
 }

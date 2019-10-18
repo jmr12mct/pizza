@@ -18,7 +18,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents Pizza table Id column value is auto-generated UUID.
+ * Represents Pizza table
+ * 
+ * Id column value is auto-generated UUID.
  * 
  * Lombok will generate Getters and Setters as well as No Argument Constructor
  * 
