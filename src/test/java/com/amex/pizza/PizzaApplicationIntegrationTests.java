@@ -23,6 +23,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.amex.pizza.rest.domain.PizzaDto;
@@ -32,12 +33,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Integration testing class to test the APIs provided by controller
  * 
+ * Using SpringBootTest and TestRestTemplate allows us to make connection to
+ * APIs
+ * 
+ * Dirties context is used to clean DB before each test is called
+ * 
  * @author Mano Ranjan Jayamaran
  * @version 1.0
  */
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = PizzaApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class PizzaApplicationIntegrationTests {
 
 	@Autowired
@@ -52,24 +59,6 @@ class PizzaApplicationIntegrationTests {
 
 	@Test
 	void contextLoads() {
-	}
-
-	/**
-	 * Get the List as JSON String and assert the List
-	 * 
-	 * Since id is a random UUID, we just check if the other fields are present and
-	 * it is returned as List
-	 */
-	@Test
-	public void testGetAllPizzas() throws IOException, JSONException {
-		ResponseEntity<String> response = restTemplate.getForEntity(getRootUrl() + "/api/v1/pizzas", String.class);
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode responseJson = objectMapper.readTree(response.getBody());
-		assertEquals(OK, response.getStatusCode());
-		assertFalse(responseJson.isMissingNode());
-		assertTrue(responseJson.toString()
-				.contains("\"name\":\"Tikka\",\"price\":25.0,\"description\":\"Spicy Pizza\"}]"));
 	}
 
 	/**
@@ -89,6 +78,34 @@ class PizzaApplicationIntegrationTests {
 		assertEquals(NAME, addedPizzaDto.getName());
 		assertEquals(PRICE, addedPizzaDto.getPrice());
 		assertEquals(DESCRIPTION, addedPizzaDto.getDescription());
+	}
+
+	/**
+	 * Get the List as JSON String and assert the List
+	 * 
+	 * Since id is a random UUID, we just check if the other fields are present and
+	 * it is returned as List
+	 */
+	@Test
+	public void testGetAllPizzas() throws IOException, JSONException {
+		PizzaDto pizzaDto = createMockPizzaDto();
+		ResponseEntity<PizzaDto> postResponse = restTemplate.postForEntity(getRootUrl() + "/api/v1/pizzas", pizzaDto,
+				PizzaDto.class);
+		final PizzaDto addedPizzaDto = postResponse.getBody();
+		assertEquals(OK, postResponse.getStatusCode());
+		assertEquals(UUID.class, addedPizzaDto.getId().getClass());
+		assertEquals(NAME, addedPizzaDto.getName());
+		assertEquals(PRICE, addedPizzaDto.getPrice());
+		assertEquals(DESCRIPTION, addedPizzaDto.getDescription());
+
+		ResponseEntity<String> response = restTemplate.getForEntity(getRootUrl() + "/api/v1/pizzas", String.class);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode responseJson = objectMapper.readTree(response.getBody());
+		assertEquals(OK, response.getStatusCode());
+		assertFalse(responseJson.isMissingNode());
+		assertTrue(responseJson.toString()
+				.contains("\"name\":\"Tikka\",\"price\":25.0,\"description\":\"Spicy Pizza\"}]"));
 	}
 
 	/**
@@ -147,8 +164,9 @@ class PizzaApplicationIntegrationTests {
 		// Updating the name value
 		pizzaDto.setName(NEW_NAME);
 		HttpEntity<PizzaDto> requestEntity = new HttpEntity<>(pizzaDto);
-		ResponseEntity<PizzaDto> putResponse = restTemplate.exchange(getRootUrl() + "/api/v1/pizzas/" + addedPizzaDto.getId(),
-				HttpMethod.PUT, requestEntity, PizzaDto.class);
+		ResponseEntity<PizzaDto> putResponse = restTemplate.exchange(
+				getRootUrl() + "/api/v1/pizzas/" + addedPizzaDto.getId(), HttpMethod.PUT, requestEntity,
+				PizzaDto.class);
 		final PizzaDto updatedPizzaDto = putResponse.getBody();
 		assertEquals(HttpStatus.OK, putResponse.getStatusCode());
 		assertEquals(UUID.class, updatedPizzaDto.getId().getClass());
