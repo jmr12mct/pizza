@@ -12,7 +12,7 @@ Below is the list of API endpoints with their respective input and output:
 ### Base URL:
 
 ```
-http://localhost:9080/
+http://localhost:8080/
 ```
 
 
